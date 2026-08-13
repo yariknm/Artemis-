@@ -3,8 +3,8 @@ const express = require('express');
 const app = express();
 
 const PORT_WEB = process.env.PORT || 3000;
-app.get('/', (req, res) => res.send('AFK-бот активен!'));
-app.listen(PORT_WEB, () => console.log(`Веб-сервер работает`));
+app.get('/', (req, res) => res.send('Бот штурмует Aternos!'));
+app.listen(PORT_WEB, () => console.log(`Веб-сервер активен`));
 
 function startBot() {
   const bot = mineflayer.createBot({
@@ -15,7 +15,7 @@ function startBot() {
   });
 
   bot.on('spawn', () => {
-    console.log('✅ Бот успешно зашел на сервер!');
+    console.log('🎉 УРА! Бот успешно пробился на сервер!');
     setInterval(() => {
       const actions = ['jump', 'left', 'right'];
       const randomAction = actions[Math.floor(Math.random() * actions.length)];
@@ -25,10 +25,15 @@ function startBot() {
   });
 
   bot.on('end', () => {
-    console.log('🔁 Отключение. Перезаход через 15 сек...');
-    setTimeout(startBot, 15000); 
+    // Уменьшаем задержку до 3 секунд для агрессивного перезахода (пробиваем защиту Aternos)
+    console.log('🔁 Сброс соединения. Быстрая попытка пробиться через 3 секунды...');
+    setTimeout(startBot, 3000); 
   });
 
-  bot.on('error', (err) => console.log('⚠️ Ошибка:', err.message));
+  bot.on('error', (err) => {
+    console.log('⚠️ Ошибка (пробиваемся дальше):', err.message);
+    // При ошибке сокета тоже пробуем зайти заново через 3 секунды
+    setTimeout(startBot, 3000);
+  });
 }
 startBot();
